@@ -1,0 +1,10 @@
+*.csv
+*.bin
+*.json
+*.log
+*.npy
+result
+save
+model
+data
+__pycache__

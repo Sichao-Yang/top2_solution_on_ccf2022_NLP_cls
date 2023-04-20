@@ -1,0 +1,11 @@
+# python=3.8
+pandas
+# torch==1.12.1+cu102
+# cudatoolkit==10.2
+# conda install pytorch cudatoolkit=10.2
+scikit-learn==1.0
+matplotlib
+# transformers==4.22.1
+transformers==4.11.0
+toml==0.10.2
+easydict==1.10

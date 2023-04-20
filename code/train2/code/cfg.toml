@@ -1,0 +1,71 @@
+seed=32                # this is the starting seed for cv_id 1
+seed_add=233            # this is the addon seed for following cv_ids
+# ============= Data Configs =============
+# test_filepath='data/testA.json'
+test_filepath='data/testB.json'
+train_filepath='data/train.json'
+aug_filepath='data/train_aug.json'
+pseudo_filepath='data/pseudo_labels_AB.json'
+savedmodel_filepath='result/trained_models'
+# bert_dir='data/model/pytorch/chinese-roberta-wwm-ext'
+bert_dir='data/model/pytorch/Nezha_cn_base'
+# bert_dir='data/model/pytorch/macbert_base'
+output_dir='result'
+class_num=36
+make_cvids=true
+fold_num=5
+cv_confidence_masking=false
+cv_masking_method='ratio'       # median ratio knn, used to mask cv models before ensemble base on their best evaluation scores
+ensemble_method='voting'        # prob_merging voting, used to ensemble inference result from single cv models
+use_aug=true
+use_pseudo=true
+pseudo_confidence_threshold=0    # pseudo_labels: predicted prob. above this can be included in pseudo_labels.json after ensemble
+use_ema=true                    # teacher model for consistency regularization
+ema_decay=0.9
+use_swa=false
+use_attack=true
+attack_method='pgd'             # attack method fgm or pgd
+use_fp16=true
+resample=false
+grad_accum_steps=0              # gradient accumulation steps, if no gradient accumulation then set to 0
+# ============= Model para =============
+do=0.4          # dropout for cls layer
+multi_do=2      # multidropout for cls layer, starts from do, then do-0.1, then do-0.2...
+cls_method='first_concat'       # sep_merge  first_concat  avg_seq_concat
+# ============= losses =============
+unsup_lam=1e1     # weight for unsup loss
+sup_lam=1.0       # weight for sup loss
+pseudo_lam=1.0    # weight for pseudo sup loss
+sup_losstype='focal_weighted'        # loss function for supervised part ce focal focal_weighted ls_ce_weighted
+sup2_losstype='ls_ce'               # for pseudo label part
+unsup_losstype='kl'        # loss function for unsupervised part consistency regularization p2
+temp=1                      # temperature for unsupervised loss, the lower the sharper
+warmup_epochs_w_only_oridat=5      # epochs with no aug or pseudo data added
+# ============= training paras =============
+max_epochs=32               # How many epochs
+learning_rate=2e-4          # initial learning rate
+weight_decay=0.01           # Weight deay if we apply some
+adam_epsilon=1e-6           # Epsilon for Adam optimizer
+bert_learning_rate=5e-5
+bert_layer_lr_decay_rate=0.8# layerwise lr multiplicative decay from top to bottom
+save_score_threshold=0.55
+reinit_n_layers=4           # reinitialize last n layers of bert
+remove_n_layers=0
+freeze_n_layers=0
+early_stop=100              # early stop if no val score imporvement in k epochs
+batch_size=32               # 40 if fp16 on and is not nezha, 32 if is nezha, no fp16 32|28
+warmup_steps=100            # warmups for parameters not in bert or vit, 766(5folds) per trainset, 100*bz=4000/766~=5.2epochs
+# swa_start_step=270          # 1,1,1,1,1,2,3,4*766/bz ~=268, meaning beginning of epoch8 we reach stp270, 
+swa_start_epoch=15          # if epoch+1>swa_start_epoch exc()
+ema_start_epoch=15
+swa_anneal_steps=20         # 4*766/40~=77
+ema_update_every_n_steps=20 
+swa_update_every_n_steps=20 
+# pseudo label = 20684, it needs 20839/766~=27.2/3~=9epochs to finish one full round on pseudo labels
+max_steps=4500              # number of total steps to decay for scheduler aprox.~len(train)*4*max_epoch/batch_size
+val_batch_size=128
+test_batch_size=256
+prefetch=16
+num_workers=16
+seq_concat_method='micro_fix'   # macro_fix or micro_fix for text sequences concat method
+# log_every_nsteps=20       # Number of steps to log training metrics
